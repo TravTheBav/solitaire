@@ -1,8 +1,7 @@
 import pygame as pg
 from settings import Settings
 from display import Display
-from card import Card
-from sprite_sheet import SpriteSheet
+from deck import Deck
 
 
 class Game:
@@ -17,11 +16,13 @@ class Game:
         self._card_dragging = False
         self._offset_x = None
         self._offset_y = None
+        self._deck = None
 
     def on_init(self):
-        # initialize pygame, the display, and set game state to running
+        # initialize pygame, the display, the deck of cards, and set game state to running
         pg.init()
         self._display_surface = Display(self._settings.get_screen_size())
+        self._deck = Deck()
         self._running = True
 
     def on_event(self, event):
@@ -57,6 +58,7 @@ class Game:
 
         # updates the screen
         self._display_surface.update()
+        
 
     def on_cleanup(self):
         pg.quit()
