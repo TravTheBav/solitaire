@@ -2,6 +2,7 @@ import pygame as pg
 from settings import Settings
 from display import Display
 from card import Card
+from sprite_sheet import SpriteSheet
 
 
 class Game:
@@ -18,34 +19,34 @@ class Game:
         self._offset_y = None
 
     def on_init(self):
+        # initialize pygame, the display, and set game state to running
         pg.init()
         self._display_surface = Display(self._settings.get_screen_size())
         self._running = True
-        self._test_card = Card(0, 0)
 
     def on_event(self, event):
         if event.type == pg.QUIT:
             self._running = False
 
         # Checks for the start of a 'card drag'
-        elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-            if self._test_card.get_rect().collidepoint(event.pos):
-                self._card_dragging = True
-                mouse_x, mouse_y = event.pos
-                self._offset_x = self._test_card.get_x() - mouse_x
-                self._offset_y = self._test_card.get_y() - mouse_y
+        #elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+        #    if self._test_card.get_rect().collidepoint(event.pos):
+        #        self._card_dragging = True
+        #        mouse_x, mouse_y = event.pos
+        #        self._offset_x = self._test_card.get_x() - mouse_x
+        #        self._offset_y = self._test_card.get_y() - mouse_y
 
         # Stop card dragging
-        elif event.type == pg.MOUSEBUTTONUP:
-            self._card_dragging = False
+        #elif event.type == pg.MOUSEBUTTONUP:
+        #    self._card_dragging = False
 
         # Update card position when dragged by the mouse
-        elif event.type == pg.MOUSEMOTION:
-            if self._card_dragging:
-                mouse_x, mouse_y = event.pos
-                x = mouse_x + self._offset_x
-                y = mouse_y + self._offset_y
-                self._test_card.set_pos(x, y)
+        #elif event.type == pg.MOUSEMOTION:
+        #    if self._card_dragging:
+        #        mouse_x, mouse_y = event.pos
+        #        x = mouse_x + self._offset_x
+        #        y = mouse_y + self._offset_y
+        #        self._test_card.set_pos(x, y)
 
     def on_loop(self):
         pass
@@ -53,9 +54,6 @@ class Game:
     def on_render(self):
         # fills background color
         self._display_surface.fill_background(self._settings.get_background_color())
-
-        # draws one card to the screen, for testing purposes
-        self._display_surface.draw(self._test_card.get_scaled_image(), self._test_card.get_pos())
 
         # updates the screen
         self._display_surface.update()

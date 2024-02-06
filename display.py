@@ -9,6 +9,10 @@ class Display:
         self._screen_size = screen_size
         self._surface = pg.display.set_mode(self._screen_size)
 
+        # set display title
+        pg.display.set_caption("Solitaire")
+
+
     def fill_background(self, color):
         """Fills in the display surface with the given color."""
 
@@ -20,6 +24,6 @@ class Display:
         self._surface.blit(image, position)
 
     def update(self):
-        """Update the screen."""
+        """Wipe and update the screen."""
 
         pg.display.flip()
