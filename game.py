@@ -1,15 +1,17 @@
 import pygame as pg
+from settings import Settings
+from display import Display
 from card import Card
 
 
-class App:
+class Game:
+    """A class for a game of standard solitaire. Controls the state of the game and coordinates the various
+    classes necessary for a game of solitaire."""
+
     def __init__(self):
-        self._running = True
+        self._settings = Settings()
         self._display_surface = None
-        self._bg_color = 'green'
-        self._width = 800
-        self._height = 640
-        self._size = self._width, self._height
+        self._running = True
         self._clock = pg.time.Clock()
         self._card_dragging = False
         self._offset_x = None
@@ -17,9 +19,9 @@ class App:
 
     def on_init(self):
         pg.init()
-        self._display_surface = pg.display.set_mode(self._size)
+        self._display_surface = Display(self._settings.get_screen_size())
         self._running = True
-        self._test_card = Card(100, 125, 0, 0)
+        self._test_card = Card(0, 0)
 
     def on_event(self, event):
         if event.type == pg.QUIT:
@@ -50,13 +52,13 @@ class App:
 
     def on_render(self):
         # fills background color
-        self._display_surface.fill(self._bg_color)
+        self._display_surface.fill_background(self._settings.get_background_color())
 
         # draws one card to the screen, for testing purposes
-        self._display_surface.blit(self._test_card.get_scaled_image(), self._test_card.get_pos())
+        self._display_surface.draw(self._test_card.get_scaled_image(), self._test_card.get_pos())
 
         # updates the screen
-        pg.display.flip()
+        self._display_surface.update()
 
     def on_cleanup(self):
         pg.quit()
@@ -75,5 +77,5 @@ class App:
 
 
 if __name__ == "__main__":
-    theApp = App()
-    theApp.on_execute()
+    solitaireGame = Game()
+    solitaireGame.on_execute()

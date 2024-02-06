@@ -4,7 +4,7 @@ import pygame as pg
 class Card(pg.sprite.Sprite):
     """Represents a standard playing card."""
 
-    def __init__(self, width, height, x_coord, y_coord):
+    def __init__(self, x_coord, y_coord):
         pg.sprite.Sprite.__init__(self)
 
         # CURRENTLY IMAGE IS JUST CARDS.PNG; THIS WILL NEED TO CHANGE TO BY DYNAMICALLY GENERATED
