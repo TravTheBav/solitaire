@@ -1,40 +1,42 @@
-import pygame as pg
+from mappable_sprite import MappableSprite
 
 
-class Card(pg.sprite.Sprite):
+class Card(MappableSprite):
     """Represents a standard playing card."""
 
     def __init__(self, suit, value, image):
-        pg.sprite.Sprite.__init__(self)
+        super().__init__(image)
 
-        self._image = image
+        self._visible = False
         self._suit = suit
         self._value = value
-        self._rect = self._image.get_rect()
-        self._x_coord = None
-        self._y_coord = None
 
-    def get_image(self):
-        """Returns a scaled image of the card."""
-        return self._image
+        # flag for enabling/preventing card movement
+        self._moveable = False
+    
+    def __repr__(self):
+        """Formats card data into a human readable string for console output purposes."""
 
-    def get_rect(self):
-        """Returns the rectangle attribute."""
-        return self._rect
+        suits = {
+            1: "Clubs",
+            2: "Spades",
+            3: "Diamonds",
+            4: "Hearts"
+        }
+        values = {
+            1: "Ace",
+            2: "Two",
+            3: "Three",
+            4: "Four",
+            5: "Five",
+            6: "Six",
+            7: "Seven",
+            8: "Eight",
+            9: "Nine",
+            10: "Ten",
+            11: "Jack",
+            12: "Queen",
+            13: "King"
+        }
 
-    def get_x(self):
-        """Returns the x coordinate."""
-        return self._x_coord
-
-    def get_y(self):
-        """Returns the y coordinate."""
-        return self._y_coord
-
-    def get_pos(self):
-        """Returns a tuple in the form (x-coordinate, y-coordinate)."""
-        return self._x_coord, self._y_coord
-
-    def set_pos(self, x, y):
-        """Sets the card's coordinates."""
-        self._x_coord = x
-        self._y_coord = y
+        return f"{values[self._value]} of {suits[self._suit]}"

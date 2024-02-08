@@ -13,10 +13,15 @@ class Game:
         self._display_surface = None
         self._running = True
         self._clock = pg.time.Clock()
+
+        # used for moving cards around
         self._card_dragging = False
         self._offset_x = None
         self._offset_y = None
+
+        # holds a deck instance as well as other card areas
         self._deck = None
+        self._available_cards = []
 
     def on_init(self):
         # initialize pygame, the display, the deck of cards, and set game state to running
@@ -28,6 +33,19 @@ class Game:
     def on_event(self, event):
         if event.type == pg.QUIT:
             self._running = False
+
+        # When the deck is clicked, move a card from the deck into available cards area
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+            if self._deck.get_rect().collidepoint(event.pos):
+
+                # draw a card from the deck and add it to the available cards area
+                card = self._deck.draw_card()
+                self._available_cards.append(card)
+                # update that cards position to the available cards area position THIS NEEDS REFACTORING
+                x, y = self._deck.get_pos()[0] + 100, self._deck.get_pos()[1]
+                card.set_pos(x, y)
+
+        
 
         # Checks for the start of a 'card drag'
         #elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
@@ -55,6 +73,14 @@ class Game:
     def on_render(self):
         # fills background color
         self._display_surface.fill_background(self._settings.get_background_color())
+
+        # display deck
+        self._display_surface.draw(self._deck.get_image(), self._deck.get_pos())
+
+        # display available cards; only need to draw the last card that was put down
+        x, y = self._deck.get_pos()[0] + 100, self._deck.get_pos()[1]
+        if self._available_cards:
+            self._display_surface.draw(self._available_cards[-1].get_image(), (x, y))
 
         # updates the screen
         self._display_surface.update()
