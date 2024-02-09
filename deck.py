@@ -7,6 +7,13 @@ class Deck(MappableSprite):
     """A class representing a standard 52 playing card deck."""
 
     def __init__(self):
+        # base width and height before scaling
+        self._width = 48
+        self._height = 64
+
+        # scale multiplier for a deck
+        self._scale = 2
+
         # set up the images first so it can be passed to the parent class initializer
         self._deck_sprites = {}
         self.init_deck_sprites()
@@ -17,26 +24,35 @@ class Deck(MappableSprite):
         # fill deck with cards
         self._cards = []
         self.create_deck()
+
+    def get_scaled_width(self):
+        """Returns the scaled width of the deck, which is the same as a card's width."""
+
+        return self._width * self._scale
+    
+    def get_scaled_height(self):
+        """Returns the scaled height of the deck, which is the same as a card's height."""
+
+        return self._height * self._scale
         
     def create_deck(self):
         """Creates all cards and adds them to the deck."""
 
         cards_sprite_sheet = SpriteSheet('images/cards.png')
-        width, height = 48, 64
 
         for suit in range(0, 4):
             x_coord = 0
-            y_coord = height * suit
+            y_coord = self._height * suit
 
             for card_value in range(0, 13):
-                sprite = cards_sprite_sheet.get_sprite(x_coord, y_coord, width, height, 2)
+                sprite = cards_sprite_sheet.get_sprite(x_coord, y_coord, self._width, self._height, self._scale)
                 card = Card(suit + 1, card_value + 1, sprite)
 
                 # add card to list
                 self._cards.append(card)
 
                 # increment x coordinate by the width of a card
-                x_coord += width
+                x_coord += self._width
 
     def init_deck_sprites(self):
         """Set the sprites for an empty deck and a non-empty deck."""
@@ -45,11 +61,10 @@ class Deck(MappableSprite):
         cards_sprite_sheet = SpriteSheet('images/cards.png')
 
         # set sprite for a card back
-        width, height = 48, 64
-        card_back_sprite = cards_sprite_sheet.get_sprite(0, 256, width, height, 2)
+        card_back_sprite = cards_sprite_sheet.get_sprite(0, 256, self._width, self._height, self._scale)
 
         # set sprite for an empty deck
-        empty_deck_sprite = cards_sprite_sheet.get_sprite(48, 256, width, height, 2)
+        empty_deck_sprite = cards_sprite_sheet.get_sprite(48, 256, self._width, self._height, self._scale)
 
         # populate the deck sprites dictionary
         self._deck_sprites["not empty"] = card_back_sprite

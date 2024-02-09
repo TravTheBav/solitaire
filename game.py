@@ -2,6 +2,7 @@ import pygame as pg
 from settings import Settings
 from display import Display
 from deck import Deck
+from available_cards_area import AvailableCardsArea
 
 
 class Game:
@@ -21,13 +22,17 @@ class Game:
 
         # holds a deck instance as well as other card areas
         self._deck = None
-        self._available_cards = []
+        self._available_cards = None
 
     def on_init(self):
         # initialize pygame, the display, the deck of cards, and set game state to running
         pg.init()
         self._display_surface = Display(self._settings.get_screen_size())
         self._deck = Deck()
+        deck_x, deck_y = self._settings.get_screen_width() - (self._deck.get_scaled_width() + 10), 10
+        self._deck.set_pos(deck_x, deck_y)
+        available_cards_x, available_cards_y = self._settings.get_screen_width() - (self._deck.get_scaled_width() * 2 + 20), 10
+        self._available_cards = AvailableCardsArea(available_cards_x, available_cards_y, self._deck.get_scaled_width(), self._deck.get_scaled_height())
         self._running = True
 
     def on_event(self, event):
@@ -38,14 +43,14 @@ class Game:
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
             if self._deck.get_rect().collidepoint(event.pos):
 
-                # draw a card from the deck and add it to the available cards area
+                # draw a card from the deck
                 card = self._deck.draw_card()
-                self._available_cards.append(card)
-                # update that cards position to the available cards area position THIS NEEDS REFACTORING
-                x, y = self._deck.get_pos()[0] + 100, self._deck.get_pos()[1]
+                
+                # update that cards position to the available cards area position
+                x, y = self._available_cards.x, self._available_cards.y
                 card.set_pos(x, y)
 
-        
+                self._available_cards.add_card(card)
 
         # Checks for the start of a 'card drag'
         #elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
@@ -78,9 +83,9 @@ class Game:
         self._display_surface.draw(self._deck.get_image(), self._deck.get_pos())
 
         # display available cards; only need to draw the last card that was put down
-        x, y = self._deck.get_pos()[0] + 100, self._deck.get_pos()[1]
-        if self._available_cards:
-            self._display_surface.draw(self._available_cards[-1].get_image(), (x, y))
+        if not self._available_cards.is_empty():
+            card = self._available_cards.get_last_card()
+            self._display_surface.draw(card.get_image(), (self._available_cards.x, self._available_cards.y))
 
         # updates the screen
         self._display_surface.update()
