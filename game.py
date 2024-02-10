@@ -38,6 +38,7 @@ class Game:
         self._deck = Deck()
         x, y = self._settings.get_screen_width() - (self._deck.get_scaled_width() + 10), 10
         self._deck.set_pos(x, y)
+        self._deck.shuffle()
 
     def setup_available_cards_area(self):
         """Sets up the area where cards are placed when they are drawn from the deck."""

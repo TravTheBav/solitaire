@@ -1,6 +1,7 @@
 from mappable_sprite import MappableSprite
 from card import Card
 from sprite_sheet import SpriteSheet
+import random
 
 
 class Deck(MappableSprite):
@@ -34,6 +35,31 @@ class Deck(MappableSprite):
         """Returns the scaled height of the deck, which is the same as a card's height."""
 
         return self._height * self._scale
+    
+    def init_deck_sprites(self):
+        """Set the sprites for an empty deck and a non-empty deck."""
+
+        cards_sprite_sheet = SpriteSheet('images/cards.png')
+        # set sprite for a card back
+        card_back_sprite = cards_sprite_sheet.get_sprite(0, 256, self._width, self._height, self._scale)
+        # set sprite for an empty deck
+        empty_deck_sprite = cards_sprite_sheet.get_sprite(48, 256, self._width, self._height, self._scale)
+
+        # populate the deck sprites dictionary
+        self._deck_sprites["not empty"] = card_back_sprite
+        self._deck_sprites["empty"] = empty_deck_sprite
+
+    def toggle_sprite(self):
+        """Switches the sprite from empty to full or from full to empty."""
+        x, y = self.get_pos()
+
+        if self._image == self._deck_sprites["not empty"]:
+            self._image = self._deck_sprites["empty"]
+        else:
+            self._image = self._deck_sprites["not empty"]
+
+        self._rect = self._image.get_rect()
+        self.set_pos(x, y)
         
     def create_deck(self):
         """Creates all cards and adds them to the deck."""
@@ -54,22 +80,6 @@ class Deck(MappableSprite):
                 # increment x coordinate by the width of a card
                 x_coord += self._width
 
-    def init_deck_sprites(self):
-        """Set the sprites for an empty deck and a non-empty deck."""
-
-        # TO DO - NEED TO MAKE A SPRITE FOR AN EMPTY DECK AND MAKE SELF._IMAGE INTO A DICTIONARY
-        cards_sprite_sheet = SpriteSheet('images/cards.png')
-
-        # set sprite for a card back
-        card_back_sprite = cards_sprite_sheet.get_sprite(0, 256, self._width, self._height, self._scale)
-
-        # set sprite for an empty deck
-        empty_deck_sprite = cards_sprite_sheet.get_sprite(48, 256, self._width, self._height, self._scale)
-
-        # populate the deck sprites dictionary
-        self._deck_sprites["not empty"] = card_back_sprite
-        self._deck_sprites["empty"] = empty_deck_sprite
-
     def draw_card(self):
         """Pops a card off the top of the deck."""
 
@@ -84,16 +94,8 @@ class Deck(MappableSprite):
         """Returns True if the deck is empty, otherwise returns False."""
 
         return len(self._cards) == 0
-    
-    def toggle_sprite(self):
-        """Switches the sprite from empty to full or from full to empty."""
-        x, y = self.get_pos()
 
-        if self._image == self._deck_sprites["not empty"]:
-            self._image = self._deck_sprites["empty"]
-        else:
-            self._image = self._deck_sprites["not empty"]
+    def shuffle(self):
+        """Shuffles the deck."""
 
-        self._rect = self._image.get_rect()
-        self.set_pos(x, y)
-        
+        random.shuffle(self._cards)
