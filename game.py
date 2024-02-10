@@ -50,18 +50,12 @@ class Game:
         if event.type == pg.QUIT:
             self._running = False
 
-        # When the deck is clicked, move a card from the deck into available cards area
+        # Left mouse button
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-            if self._deck.get_rect().collidepoint(event.pos):
-
-                # draw a card from the deck
-                card = self._deck.draw_card()
-                
-                # update that cards position to the available cards area position
-                x, y = self._available_cards.get_pos()
-                card.set_pos(x, y)
-
-                self._available_cards.add_card(card)
+            
+            # When the deck is clicked, move a card from the deck into available cards area
+            if self.check_deck_clicked(event.pos):
+                self.deck_clicked()
 
         # Checks for the start of a 'card drag'
         #elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
@@ -118,6 +112,39 @@ class Game:
             self._clock.tick(60)
         self.on_cleanup()
 
+    def check_deck_clicked(self, event_pos):
+        """Returns true if the deck was clicked, otherwise returns false."""
+
+        if self._deck.get_rect().collidepoint(event_pos):
+            return True
+        
+        return False
+
+    def deck_clicked(self):
+        """Handles the game logic for when the deck is clicked."""
+
+        if self._deck.is_empty():
+            # add all cards back to deck in the same order
+            while not self._available_cards.is_empty():
+                card = self._available_cards.draw_card()
+                self._deck.add_card(card)
+
+            # toggle the deck image to indicate it has cards
+            self._deck.toggle_sprite()
+
+        else:
+            # draw a card from the deck
+            card = self._deck.draw_card()
+                
+            # update that cards position to the available cards area position and add card to available cards
+            x, y = self._available_cards.get_pos()
+            card.set_pos(x, y)
+            self._available_cards.add_card(card)
+
+            # if the last card has been drawn, then the sprite for the deck must be updated to reflect its empty state
+            if self._deck.is_empty():
+                self._deck.toggle_sprite()
+        
 
 if __name__ == "__main__":
     solitaireGame = Game()

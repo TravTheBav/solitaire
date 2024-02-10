@@ -8,11 +8,7 @@ class Settings:
         # screen size
         self._screen_size = (self._screen_width, self._screen_height)
         # screen background color
-        self._bg_color = 'green'
-        # base card width
-        self._card_width = 48
-        # base card height
-        self._card_height = 64
+        self._bg_color = (75, 105, 47, 255)
 
     def get_screen_width(self):
         """Returns the screen width."""

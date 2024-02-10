@@ -11,7 +11,7 @@ class SpriteSheet:
     def get_sprite(self, x_coord, y_coord, width, height, scale):
         """Returns a section of the sprite sheet image."""
 
-        sprite = pg.Surface((width, height)).convert_alpha()
+        sprite = pg.Surface((width, height), pg.SRCALPHA)
         sprite.blit(self._full_sheet_image, (0, 0), (x_coord, y_coord, width, height))
         sprite = pg.transform.scale(sprite, (width * scale, height * scale))
         return sprite

@@ -49,7 +49,7 @@ class Deck(MappableSprite):
                 card = Card(suit + 1, card_value + 1, sprite)
 
                 # add card to list
-                self._cards.append(card)
+                self.add_card(card)
 
                 # increment x coordinate by the width of a card
                 x_coord += self._width
@@ -70,10 +70,30 @@ class Deck(MappableSprite):
         self._deck_sprites["not empty"] = card_back_sprite
         self._deck_sprites["empty"] = empty_deck_sprite
 
-        # set image to card back to start
-        self._image = self._deck_sprites["not empty"]
-
     def draw_card(self):
         """Pops a card off the top of the deck."""
 
         return self._cards.pop()
+    
+    def add_card(self, card):
+        """Adds a card to the top of the deck."""
+
+        self._cards.append(card)
+    
+    def is_empty(self):
+        """Returns True if the deck is empty, otherwise returns False."""
+
+        return len(self._cards) == 0
+    
+    def toggle_sprite(self):
+        """Switches the sprite from empty to full or from full to empty."""
+        x, y = self.get_pos()
+
+        if self._image == self._deck_sprites["not empty"]:
+            self._image = self._deck_sprites["empty"]
+        else:
+            self._image = self._deck_sprites["not empty"]
+
+        self._rect = self._image.get_rect()
+        self.set_pos(x, y)
+        
