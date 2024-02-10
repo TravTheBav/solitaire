@@ -34,6 +34,6 @@ class MappableSprite(pg.sprite.Sprite):
         return self._rect.x, self._rect.y
     
     def set_pos(self, x, y):
-        """Sets the card's coordinates."""
+        """Sets the mappable sprite's coordinates."""
         self._rect.x = x
         self._rect.y = y

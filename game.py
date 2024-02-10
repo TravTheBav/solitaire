@@ -2,7 +2,7 @@ import pygame as pg
 from settings import Settings
 from display import Display
 from deck import Deck
-from available_cards_area import AvailableCardsArea
+from card_placement_area import CardPlacementArea
 
 
 class Game:
@@ -28,12 +28,23 @@ class Game:
         # initialize pygame, the display, the deck of cards, and set game state to running
         pg.init()
         self._display_surface = Display(self._settings.get_screen_size())
-        self._deck = Deck()
-        deck_x, deck_y = self._settings.get_screen_width() - (self._deck.get_scaled_width() + 10), 10
-        self._deck.set_pos(deck_x, deck_y)
-        available_cards_x, available_cards_y = self._settings.get_screen_width() - (self._deck.get_scaled_width() * 2 + 20), 10
-        self._available_cards = AvailableCardsArea(available_cards_x, available_cards_y, self._deck.get_scaled_width(), self._deck.get_scaled_height())
+        self.setup_new_deck()
+        self.setup_available_cards_area()
         self._running = True
+
+    def setup_new_deck(self):
+        """Makes a new deck object for the game."""
+
+        self._deck = Deck()
+        x, y = self._settings.get_screen_width() - (self._deck.get_scaled_width() + 10), 10
+        self._deck.set_pos(x, y)
+
+    def setup_available_cards_area(self):
+        """Sets up the area where cards are placed when they are drawn from the deck."""
+
+        self._available_cards = CardPlacementArea("dashed")
+        x, y = self._settings.get_screen_width() - (self._deck.get_scaled_width() * 2 + 20), 10
+        self._available_cards.set_pos(x, y)
 
     def on_event(self, event):
         if event.type == pg.QUIT:
@@ -47,7 +58,7 @@ class Game:
                 card = self._deck.draw_card()
                 
                 # update that cards position to the available cards area position
-                x, y = self._available_cards.x, self._available_cards.y
+                x, y = self._available_cards.get_pos()
                 card.set_pos(x, y)
 
                 self._available_cards.add_card(card)
@@ -85,7 +96,8 @@ class Game:
         # display available cards; only need to draw the last card that was put down
         if not self._available_cards.is_empty():
             card = self._available_cards.get_last_card()
-            self._display_surface.draw(card.get_image(), (self._available_cards.x, self._available_cards.y))
+            x, y = self._available_cards.get_pos()
+            self._display_surface.draw(card.get_image(), (x, y))
 
         # updates the screen
         self._display_surface.update()
