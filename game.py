@@ -144,10 +144,15 @@ class Game:
         """Handles the game logic for when the deck is clicked."""
 
         if self._deck.is_empty():
-            # add all cards back to deck in the same order
+            # add all cards back to deck in the same order and set them to unmoveable
             while not self._available_cards.is_empty():
                 card = self._available_cards.draw_card()
+                card.set_to_unmoveable()
                 self._deck.add_card(card)
+
+            # set the last card added as moveable
+            top_card = self._deck.get_top_card()
+            top_card.set_to_moveable()
 
             # toggle the deck image to indicate it has cards
             self._deck.toggle_sprite()
@@ -155,6 +160,10 @@ class Game:
         else:
             # draw a card from the deck
             card = self._deck.draw_card()
+
+            # if there is a card on top of the available cards area, it must first be set to unmoveable
+            if self._available_cards.get_last_card():
+                self._available_cards.get_last_card().set_to_unmoveable()
                 
             # update that cards position to the available cards area position and add card to available cards
             x, y = self._available_cards.get_pos()

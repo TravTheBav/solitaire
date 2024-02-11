@@ -42,7 +42,10 @@ class CardPlacementArea(MappableSprite):
     def get_last_card(self):
         """Return the top card on the stack."""
 
-        return self._cards[-1]
+        if not self.is_empty():
+            return self._cards[-1]
+        else:
+            return False
     
     def add_card(self, card):
         """Add a card onto the top of the stack."""

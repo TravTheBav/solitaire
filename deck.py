@@ -36,6 +36,11 @@ class Deck(MappableSprite):
 
         return self._height * self._scale
     
+    def get_top_card(self):
+        """Returns the card on the top of the deck."""
+
+        return self._cards[-1]
+    
     def init_deck_sprites(self):
         """Set the sprites for an empty deck and a non-empty deck."""
 
@@ -83,7 +88,13 @@ class Deck(MappableSprite):
     def draw_card(self):
         """Pops a card off the top of the deck."""
 
-        return self._cards.pop()
+        card = self._cards.pop()
+
+        # make sure new top card is set to moveable
+        new_top_card = self.get_top_card()
+        new_top_card.set_to_moveable()
+
+        return card
     
     def add_card(self, card):
         """Adds a card to the top of the deck."""
@@ -99,3 +110,5 @@ class Deck(MappableSprite):
         """Shuffles the deck."""
 
         random.shuffle(self._cards)
+        # flag top card as moveable
+        self._cards[-1].set_to_moveable()

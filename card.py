@@ -7,7 +7,6 @@ class Card(MappableSprite):
     def __init__(self, suit, value, image):
         super().__init__(image)
 
-        self._visible = False
         self._suit = suit
         self._value = value
 
@@ -40,3 +39,13 @@ class Card(MappableSprite):
         }
 
         return f"{values[self._value]} of {suits[self._suit]}"
+    
+    def set_to_moveable(self):
+        """Sets the card's moveable flag to True."""
+
+        self._moveable = True
+
+    def set_to_unmoveable(self):
+        """Sets the card's moveable flag to False."""
+
+        self._moveable = False
