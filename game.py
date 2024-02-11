@@ -3,6 +3,7 @@ from settings import Settings
 from display import Display
 from deck import Deck
 from card_placement_area import CardPlacementArea
+from suit_area import SuitArea
 
 
 class Game:
@@ -23,6 +24,7 @@ class Game:
         # holds a deck instance as well as other card areas
         self._deck = None
         self._available_cards = None
+        self._suit_areas = {}
 
     def on_init(self):
         # initialize pygame, the display, the deck of cards, and set game state to running
@@ -30,6 +32,7 @@ class Game:
         self._display_surface = Display(self._settings.get_screen_size())
         self.setup_new_deck()
         self.setup_available_cards_area()
+        self.setup_suit_areas()
         self._running = True
 
     def setup_new_deck(self):
@@ -46,6 +49,18 @@ class Game:
         self._available_cards = CardPlacementArea("dashed")
         x, y = self._settings.get_screen_width() - (self._deck.get_scaled_width() * 2 + 20), 10
         self._available_cards.set_pos(x, y)
+
+    def setup_suit_areas(self):
+        """Sets up the areas where cards are placed by suit. Game is over when all 4 suit areas are filled."""
+
+        x, y = 10, 10
+
+        # set position for each suit area
+        for key in range(1, 5):
+            suit_area = SuitArea("solid")
+            suit_area.set_pos(x, y)
+            self._suit_areas[key] = suit_area
+            x += (self._deck.get_scaled_width() + 10)
 
     def on_event(self, event):
         if event.type == pg.QUIT:
@@ -93,6 +108,10 @@ class Game:
             card = self._available_cards.get_last_card()
             x, y = self._available_cards.get_pos()
             self._display_surface.draw(card.get_image(), (x, y))
+
+        # display suit areas
+        for suit_area in self._suit_areas.values():
+            self._display_surface.draw(suit_area.get_image(), suit_area.get_pos())
 
         # updates the screen
         self._display_surface.update()
